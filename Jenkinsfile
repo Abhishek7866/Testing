@@ -17,7 +17,8 @@ pipeline {
             steps {
                 sh '''
                 export PATH=/usr/local/bin:$PATH
-                docker build -t $IMAGE_NAME .
+                docker buildx create --use || true
+                docker buildx build --platform linux/amd64 -t $IMAGE_NAME --push .
                 '''
             }
         }
