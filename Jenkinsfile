@@ -45,7 +45,10 @@ pipeline {
 
         stage('Deploy to Azure') {
             steps {
-                sh 'az webapp config container set --name new-apd-app --resource-group apd-resource-group --docker-custom-image-name $IMAGE_NAME'
+                sh '''
+                export PATH=/usr/local/bin:/opt/homebrew/bin:$PATH
+                az webapp config container set --name new-apd-app --resource-group apd-resource-group --docker-custom-image-name $IMAGE_NAME
+                '''
             }
         }
     }
