@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('AbhishekDocker')
-        IMAGE_NAME = "dockerbatra69/apd-stock-app:v1"
+        IMAGE_NAME = "apd-stock-app"
     }
 
     stages {
@@ -27,7 +27,9 @@ pipeline {
                 sh '''
                 export PATH=/usr/local/bin:$PATH
                 docker buildx create --use || true
-                docker buildx build --platform linux/amd64 -t $IMAGE_NAME --push .
+                docker buildx build --platform linux/amd64 -t $IMAGE_NAME .
+                docker tag $IMAGE_NAME dockerbatra69/$IMAGE_NAME:v1
+                docker push dockerbatra69/$IMAGE_NAME:v1
                 '''
             }
         }
