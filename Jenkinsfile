@@ -9,25 +9,37 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: 'AbhishekGit', branch: 'main', url: 'https://github.com/Abhishek7866/Testing.git'
+                git credentialsId: 'AbhishekGit', url: 'https://github.com/Abhishek7866/Testing.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                // Ensure Docker is in the PATH for this step
+                sh '''
+                export PATH=/usr/local/bin:$PATH
+                docker build -t $IMAGE_NAME .
+                '''
             }
         }
 
         stage('Login to Docker Hub') {
             steps {
-                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                // Ensure Docker is in the PATH for this step
+                sh '''
+                export PATH=/usr/local/bin:$PATH
+                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                '''
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                sh 'docker push $IMAGE_NAME'
+                // Ensure Docker is in the PATH for this step
+                sh '''
+                export PATH=/usr/local/bin:$PATH
+                docker push $IMAGE_NAME
+                '''
             }
         }
 
