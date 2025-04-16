@@ -54,7 +54,7 @@ pipeline {
                 export PATH=/usr/local/bin:/opt/homebrew/bin:$PATH
                 az webapp config container set --name new-apd-app \
                   --resource-group apd-resource-group \
-                  --container-image-name $IMAGE_NAME
+                  --container-image-name dockerbatra69/$IMAGE_NAME:v1
                 '''
             }
         }
