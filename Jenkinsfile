@@ -4,25 +4,20 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('AbhishekDocker')
         IMAGE_NAME = "dockerbatra69/apd-stock-app:v1"
-        CUSTOM_PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Ensure Git is in PATH
-                sh '''
-                export PATH=$CUSTOM_PATH:$PATH
-                git --version
-                git clone https://github.com/Abhishek7866/Testing.git
-                '''
+                git credentialsId: 'AbhishekGit', branch: 'main', url: 'https://github.com/Abhishek7866/Testing.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                // Ensure Docker is in the PATH for this step
                 sh '''
-                export PATH=$CUSTOM_PATH:$PATH
+                export PATH=/usr/local/bin:$PATH
                 docker build -t $IMAGE_NAME .
                 '''
             }
@@ -30,8 +25,9 @@ pipeline {
 
         stage('Login to Docker Hub') {
             steps {
+                // Ensure Docker is in the PATH for this step
                 sh '''
-                export PATH=$CUSTOM_PATH:$PATH
+                export PATH=/usr/local/bin:$PATH
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                 '''
             }
@@ -39,8 +35,9 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
+                // Ensure Docker is in the PATH for this step
                 sh '''
-                export PATH=$CUSTOM_PATH:$PATH
+                export PATH=/usr/local/bin:$PATH
                 docker push $IMAGE_NAME
                 '''
             }
@@ -49,10 +46,13 @@ pipeline {
         stage('Deploy to Azure') {
             steps {
                 sh '''
-                export PATH=$CUSTOM_PATH:$PATH
+                export PATH=/usr/local/bin:/opt/homebrew/bin:$PATH
                 az webapp config container set --name new-apd-app --resource-group apd-resource-group --docker-custom-image-name $IMAGE_NAME
                 '''
             }
         }
     }
 }
+
+
+Edit this
