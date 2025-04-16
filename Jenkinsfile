@@ -13,16 +13,6 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh '''
-                export PATH=/usr/local/bin:$PATH
-                docker buildx create --use || true
-                docker buildx build --platform linux/amd64 -t $IMAGE_NAME --push .
-                '''
-            }
-        }
-
         stage('Login to Docker Hub') {
             steps {
                 sh '''
@@ -32,11 +22,12 @@ pipeline {
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Build and Push Docker Image') {
             steps {
                 sh '''
                 export PATH=/usr/local/bin:$PATH
-                docker push $IMAGE_NAME
+                docker buildx create --use || true
+                docker buildx build --platform linux/amd64 -t $IMAGE_NAME --push .
                 '''
             }
         }
